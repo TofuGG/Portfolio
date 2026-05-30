@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tofu — Developer</title>
+
+  <!-- Open Graph / Social preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Tofu — Developer" />
+  <meta property="og:description" content="CSE student & self-taught dev chasing game development. I build things with Python, C, GDScript and TypeScript." />
+  <meta property="og:image" content="https://avatars.githubusercontent.com/u/66192674?v=4" />
+  <meta property="og:url" content="https://github.com/TofuGG" />
+  <meta property="og:site_name" content="Tofu's Portfolio" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Tofu — Developer" />
+  <meta name="twitter:description" content="CSE student & self-taught dev chasing game development. I build things with Python, C, GDScript and TypeScript." />
+  <meta name="twitter:image" content="https://avatars.githubusercontent.com/u/66192674?v=4" />
+
+  <!-- Meta description -->
+  <meta name="description" content="CSE student & self-taught dev chasing game development. I build things with Python, C, GDScript and TypeScript." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;600;700;800&family=Share+Tech+Mono&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --surface2: #181818;
+      --border: #222222;
+      --text: #e8e8e8;
+      --muted: #555555;
+      --accent: #7ab3f5;
+      --accent2: #a78bfa;
+      --mono: 'Space Mono', monospace;
+      --display: 'Orbitron', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 2.5rem;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    nav.scrolled {
+      border-color: var(--border);
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── Hero ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 2.5rem 4rem;
+      position: relative;
+      overflow: hidden;
+      perspective: 1200px;
+    }
+
+    /* Ambient depth orbs */
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(80px);
+      opacity: 0;
+      animation: orbFade 1.2s ease forwards;
+    }
+    .hero-orb-1 {
+      width: 520px; height: 520px;
+      background: radial-gradient(circle, rgba(122,179,245,0.12) 0%, transparent 70%);
+      top: -120px; left: -160px;
+      animation-delay: 0.4s;
+    }
+    .hero-orb-2 {
+      width: 380px; height: 380px;
+      background: radial-gradient(circle, rgba(167,139,250,0.08) 0%, transparent 70%);
+      bottom: 40px; right: -80px;
+      animation-delay: 0.7s;
+    }
+    .hero-orb-3 {
+      width: 260px; height: 260px;
+      background: radial-gradient(circle, rgba(122,179,245,0.06) 0%, transparent 70%);
+      top: 40%; left: 55%;
+      animation-delay: 1s;
+    }
+    @keyframes orbFade {
+      to { opacity: 1; }
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.35;
+      -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+      will-change: transform;
+    }
+
+    /* Parallax layers */
+    .hero-layer {
+      position: relative;
+      will-change: transform;
+      transition: transform 0.08s linear;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.2s;
+    }
+    .hero-name {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: clamp(2.6rem, 7.5vw, 6.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.35s;
+    }
+
+    /* "Hi, I'm" line — flat, slightly muted */
+    .hero-name .line-hi {
+      display: block;
+      color: #a0a0a0;
+      font-size: 0.45em;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.15em;
+    }
+
+    /* "Tofu" — the depth star */
+    .hero-name .accent {
+      display: block;
+      color: var(--accent);
+      position: relative;
+      /* Layered text-shadow for depth/emboss */
+      text-shadow:
+        0 1px 0   #3a6a9a,
+        0 2px 0   #305880,
+        0 3px 0   #264666,
+        0 4px 0   #1c344c,
+        0 5px 0   #122232,
+        0 6px 8px rgba(0,0,0,0.5),
+        0 10px 20px rgba(0,0,0,0.35),
+        0 20px 40px rgba(122,179,245,0.12);
+      will-change: transform, text-shadow;
+      transition: text-shadow 0.1s linear;
+    }
+    .hero-tagline {
+      margin-top: 2rem;
+      font-size: clamp(0.85rem, 1.5vw, 1rem);
+      color: var(--muted);
+      max-width: 520px;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.5s;
+    }
+    .hero-tagline .highlight { color: var(--accent2); }
+    .hero-cta {
+      margin-top: 3rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.65s;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.4rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #0a0a0a;
+      border: 1px solid var(--accent);
+      font-weight: 700;
+    }
+    .btn-primary:hover { background: transparent; color: var(--accent); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--muted); color: var(--text); }
+    .hero-status {
+      margin-top: 4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.7rem;
+      color: var(--muted);
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.8s;
+    }
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 6px #4ade80;
+      animation: pulse-glow 2s ease infinite;
+      flex-shrink: 0;
+    }
+
+    /* ── Sections ── */
+    section { padding: 6rem 2.5rem; }
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+      letter-spacing: 0em;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 3rem;
+    }
+
+    /* ── Tags ── */
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.5rem;
+      background: var(--surface2);
+      color: var(--muted);
+      border-radius: 2px;
+      border: 1px solid var(--border);
+    }
+
+    /* ── Projects ── */
+    #projects { border-top: 1px solid var(--border); }
+
+    /* Bento-style project layout */
+    .projects-bento {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: auto;
+      gap: 10px;
+    }
+
+    /* Featured spans 8 cols, tall */
+    .bento-featured {
+      grid-column: span 8;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      transition: border-color 0.25s;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .bento-featured:hover { border-color: var(--accent); }
+
+    .bento-featured-header {
+      padding: 2rem 2rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .bento-featured-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(122,179,245,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .bento-badge {
+      display: inline-block;
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.55rem;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 2px;
+      margin-bottom: 1rem;
+    }
+    .bento-index {
+      font-size: 0.6rem;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      margin-bottom: 0.5rem;
+    }
+    .bento-title {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: clamp(1.3rem, 2.2vw, 1.9rem);
+      letter-spacing: 0em;
+      color: var(--text);
+      line-height: 1.1;
+      margin-bottom: 0.75rem;
+    }
+    .bento-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 480px;
+    }
+    .bento-featured-footer {
+      padding: 1.25rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: auto;
+    }
+
+    /* Side stack: spans 4 cols, split into two rows */
+    .bento-side {
+      grid-column: span 4;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .bento-stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.5rem;
+      transition: border-color 0.2s;
+    }
+    .bento-stat-card:hover { border-color: var(--border); }
+    .stat-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .stat-value {
+      font-family: var(--display);
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: 0.02em;
+      line-height: 1;
+    }
+    .stat-sub {
+      font-size: 0.65rem;
+      color: var(--muted);
+    }
+
+    /* Second row: 3 project cards */
+    .bento-row2 {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .bento-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.75rem;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      transition: border-color 0.22s, background 0.22s, transform 0.22s;
+      position: relative;
+      overflow: hidden;
+    }
+    .bento-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .bento-card:hover {
+      border-color: var(--border);
+      background: var(--surface2);
+      transform: translateY(-2px);
+    }
+    .bento-card:hover::before { transform: scaleX(1); }
+
+    .card-arrow {
+      position: absolute;
+      top: 1.25rem; right: 1.25rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      transition: color 0.2s, transform 0.2s;
+    }
+    .bento-card:hover .card-arrow { color: var(--accent); transform: translate(2px, -2px); }
+
+    .bento-card .project-num {
+      font-size: 0.58rem;
+      color: var(--muted);
+      letter-spacing: 0.18em;
+    }
+    .bento-card .project-title {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.02em;
+      color: var(--text);
+    }
+    .bento-card .project-desc {
+      font-size: 0.76rem;
+      color: var(--muted);
+      line-height: 1.75;
+      flex: 1;
+    }
+    .bento-card .tags { margin-top: auto; padding-top: 0.5rem; }
+
+    /* ── About ── */
+    #about { border-top: 1px solid var(--border); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    .about-text p {
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.9;
+      margin-bottom: 1.25rem;
+    }
+    .about-text p .hl { color: var(--text); }
+    .about-text p .hl-accent { color: var(--accent); }
+    .skills-section { display: flex; flex-direction: column; gap: 1.5rem; }
+    .skill-group label {
+      display: block;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+    .skill-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .skill-pill {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      padding: 0.3rem 0.7rem;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--text);
+      background: var(--surface);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .skill-pill:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    footer .copy { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.05em; }
+    footer .gh-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    footer .gh-link:hover { color: var(--accent); }
+
+    .inline-link {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .inline-link:hover { border-color: var(--accent); }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .bento-featured { grid-column: span 7; }
+      .bento-side { grid-column: span 5; }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.25rem; }
+      section { padding: 4rem 1.25rem; }
+      #hero { padding: 7rem 1.25rem 3rem; }
+      footer { padding: 1.5rem 1.25rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .nav-links { gap: 1.2rem; }
+
+      /* Bento collapses on tablet */
+      .projects-bento { grid-template-columns: 1fr; gap: 8px; }
+      .bento-featured { grid-column: 1 / -1; }
+      .bento-side {
+        grid-column: 1 / -1;
+        flex-direction: row;
+      }
+      .bento-row2 { grid-template-columns: 1fr 1fr; gap: 8px; }
+    }
+
+    @media (max-width: 560px) {
+      .hero-cta { flex-direction: column; }
+      .bento-side { flex-direction: column; }
+      .bento-row2 { grid-template-columns: 1fr; }
+      .bento-card { padding: 1.25rem; }
+      .bento-featured-header { padding: 1.5rem 1.5rem 1.25rem; }
+      .bento-featured-footer { padding: 1rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav id="navbar">
+    <a href="#hero" class="nav-logo">Tofu<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="#projects">Work</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="https://github.com/TofuGG" target="_blank" rel="noopener">GitHub</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <section id="hero">
+    <div class="hero-grid" id="heroGrid"></div>
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+    <div style="position:relative; max-width: 900px;">
+      <p class="hero-eyebrow hero-layer" data-depth="0.4">// developer portfolio</p>
+      <h1 class="hero-name hero-layer" data-depth="1">
+        <span class="line-hi">Hi, I'm</span>
+        <span class="accent" id="heroTofu">Tofu</span>
+      </h1>
+      <p class="hero-tagline">
+        CSE student &amp; self-taught dev chasing <span class="highlight">game development</span>.
+        I build things with Python, C, GDScript and TypeScript — and whatever else the job calls for.
+      </p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">View my work</a>
+        <a href="https://github.com/TofuGG" target="_blank" rel="noopener" class="btn btn-ghost">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+      <div class="hero-status">
+        <span class="status-dot"></span>
+        <span>Open to opportunities &amp; collaborations</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects">
+    <div style="max-width: 1100px; margin: 0 auto;">
+      <p class="section-label reveal">// selected work</p>
+      <h2 class="section-title reveal">Projects</h2>
+
+      <div class="projects-bento">
+
+        <!-- Featured: gurabott (large, left) -->
+        <div class="bento-featured reveal">
+          <div class="bento-featured-header">
+            <span class="bento-badge">Featured</span>
+            <p class="bento-index">01 / featured project</p>
+            <h3 class="bento-title">gurabott</h3>
+            <p class="bento-desc">
+              A Mineflayer-based Minecraft bot forked from aterbot and extended with significantly more features.
+              TypeScript-powered logic — auto-reconnect, chat commands, status tracking, and more.
+              Built to go further than the original ever did.
+            </p>
+          </div>
+          <div class="bento-featured-footer">
+            <div class="tags">
+              <span class="tag">TypeScript</span>
+              <span class="tag">Node.js</span>
+              <span class="tag">Mineflayer</span>
+              <span class="tag">GPL-3.0</span>
+            </div>
+            <a href="https://github.com/TofuGG/gurabott" target="_blank" rel="noopener" class="btn btn-ghost" style="flex-shrink:0;">GitHub →</a>
+          </div>
+        </div>
+
+        <!-- Stat cards (right column) -->
+        <div class="bento-side reveal">
+          <div class="bento-stat-card">
+            <span class="stat-label">Primary Language</span>
+            <span class="stat-value">TS</span>
+            <span class="stat-sub">TypeScript 99.6%</span>
+          </div>
+          <div class="bento-stat-card">
+            <span class="stat-label">License</span>
+            <span class="stat-value">GPL</span>
+            <span class="stat-sub">GPL-3.0 open source</span>
+          </div>
+          <div class="bento-stat-card">
+            <span class="stat-label">Type</span>
+            <span class="stat-value">Bot</span>
+            <span class="stat-sub">Automation / Minecraft</span>
+          </div>
+        </div>
+
+        <!-- Bottom row: 3 cards -->
+        <div class="bento-row2">
+
+          <a href="https://github.com/TofuGG/Movable" target="_blank" rel="noopener" class="bento-card reveal">
+            <span class="card-arrow">↗</span>
+            <p class="project-num">02</p>
+            <h3 class="project-title">Movable</h3>
+            <p class="project-desc">A personal project exploring movement and interaction. Check the repo for the full picture.</p>
+            <div class="tags">
+              <span class="tag">GitHub</span>
+            </div>
+          </a>
+
+          <a href="https://github.com/TofuGG/EWU-Schedule-Maker-2.0" target="_blank" rel="noopener" class="bento-card reveal">
+            <span class="card-arrow">↗</span>
+            <p class="project-num">03</p>
+            <h3 class="project-title">EWU Schedule Maker 2.0</h3>
+            <p class="project-desc">Upload your EWU advising slip and get a clean visual schedule instantly. Cyber theme, time-first layout, export as image or PDF.</p>
+            <div class="tags">
+              <span class="tag">HTML</span>
+              <span class="tag">CSS</span>
+              <span class="tag">JS</span>
+            </div>
+          </a>
+
+          <a href="https://github.com/TofuGG/AllinOne" target="_blank" rel="noopener" class="bento-card reveal">
+            <span class="card-arrow">↗</span>
+            <p class="project-num">04</p>
+            <h3 class="project-title">AllinOne</h3>
+            <p class="project-desc">Multi-utility software written in C. An early systems project — raw, honest, built from scratch.</p>
+            <div class="tags">
+              <span class="tag">C</span>
+              <span class="tag">Systems</span>
+            </div>
+          </a>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <div style="max-width: 1100px; margin: 0 auto;">
+      <p class="section-label reveal">// about me</p>
+      <h2 class="section-title reveal">Who I am</h2>
+
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <p>
+            I'm <span class="hl">Tofu</span> — a CSE undergrad and mostly self-taught developer.
+            I got into coding by curiosity, stayed for the craft, and I'm currently studying
+            Computer Science &amp; Engineering at <span class="hl">East West University</span>.
+          </p>
+          <p>
+            My main goal is <span class="hl-accent">game development</span>. I love the idea of building worlds people can get lost in.
+            GDScript and Godot are my playground for that, but I pick up whatever tool the problem calls for.
+          </p>
+          <p>
+            I'm also <span class="hl">interested in cybersecurity</span> — understanding how systems break is just as interesting as building them.
+            Currently learning Java and AutoCAD this semester and adding them to the stack.
+          </p>
+          <p>
+            Most of what I know, I taught myself. I learn by doing — by shipping things, breaking them, and figuring out why.
+          </p>
+          <div style="margin-top: 1.5rem;">
+            <a href="https://github.com/TofuGG" target="_blank" rel="noopener" class="inline-link">github.com/TofuGG</a>
+          </div>
+        </div>
+
+        <div class="skills-section reveal">
+          <div class="skill-group">
+            <label>Primary Languages</label>
+            <div class="skill-pills">
+              <span class="skill-pill">Python</span>
+              <span class="skill-pill">C</span>
+              <span class="skill-pill">GDScript</span>
+              <span class="skill-pill">TypeScript</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <label>Currently Learning</label>
+            <div class="skill-pills">
+              <span class="skill-pill">Java</span>
+              <span class="skill-pill">AutoCAD</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <label>Tools &amp; Platforms</label>
+            <div class="skill-pills">
+              <span class="skill-pill">Godot</span>
+              <span class="skill-pill">Node.js</span>
+              <span class="skill-pill">Git</span>
+              <span class="skill-pill">GitHub</span>
+              <span class="skill-pill">VS Code</span>
+              <span class="skill-pill">Apache NetBeans</span>
+              <span class="skill-pill">VMware</span>
+              <span class="skill-pill">Linux</span>
+              <span class="skill-pill">Windows</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <label>Interests</label>
+            <div class="skill-pills">
+              <span class="skill-pill">Game Dev</span>
+              <span class="skill-pill">Cybersecurity</span>
+              <span class="skill-pill">Open Source</span>
+              <span class="skill-pill">Automation</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <label>Status</label>
+            <div class="skill-pills">
+              <span class="skill-pill" style="border-color: #4ade8055; color: #4ade80;">Undergrad CSE Student</span>
+              <span class="skill-pill" style="border-color: var(--accent); color: var(--accent);">Open to Work</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <span class="copy">© 2026 Tofu. All rights reserved.</span>
+    <a href="https://github.com/TofuGG" target="_blank" rel="noopener" class="gh-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      TofuGG
+    </a>
+  </footer>
+
+  <script>
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const siblings = [...entry.target.parentElement.querySelectorAll('.reveal')];
+          const idx = siblings.indexOf(entry.target);
+          entry.target.style.transitionDelay = `${idx * 0.07}s`;
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+
+    /* ── Hero depth / parallax ── */
+    const hero = document.getElementById('hero');
+    const heroGrid = document.getElementById('heroGrid');
+    const heroTofu = document.getElementById('heroTofu');
+    const layers = hero.querySelectorAll('.hero-layer');
+    const orb1 = hero.querySelector('.hero-orb-1');
+    const orb2 = hero.querySelector('.hero-orb-2');
+
+    let cx = 0, cy = 0, targetX = 0, targetY = 0;
+    let rafId = null;
+
+    function lerp(a, b, t) { return a + (b - a) * t; }
+
+    function tick() {
+      cx = lerp(cx, targetX, 0.06);
+      cy = lerp(cy, targetY, 0.06);
+
+      /* Grid moves very subtly — opposite direction for parallax feel */
+      heroGrid.style.transform = `translate(${-cx * 8}px, ${-cy * 8}px)`;
+
+      /* Each text layer moves at its own depth */
+      layers.forEach(el => {
+        const d = parseFloat(el.dataset.depth) || 0.5;
+        el.style.transform = `translate(${cx * d * 12}px, ${cy * d * 8}px)`;
+      });
+
+      /* Orbs drift the other way */
+      orb1.style.transform = `translate(${-cx * 18}px, ${-cy * 14}px)`;
+      orb2.style.transform = `translate(${cx * 14}px, ${cy * 10}px)`;
+
+      /* Tofu text-shadow shifts to fake a light source moving */
+      const rx = cx * 6;   /* horizontal shadow offset */
+      const ry = cy * 4;   /* vertical shadow offset */
+      const dist = Math.sqrt(cx * cx + cy * cy);
+      const glowAlpha = 0.08 + dist * 0.06;
+      heroTofu.style.textShadow = `
+        ${rx * 0.16}px ${1 + ry * 0.1}px 0   #3a6a9a,
+        ${rx * 0.32}px ${2 + ry * 0.2}px 0   #305880,
+        ${rx * 0.48}px ${3 + ry * 0.3}px 0   #264666,
+        ${rx * 0.64}px ${4 + ry * 0.4}px 0   #1c344c,
+        ${rx * 0.80}px ${5 + ry * 0.5}px 0   #122232,
+        ${rx * 1.00}px ${6 + ry * 0.6}px 8px rgba(0,0,0,0.55),
+        ${rx * 1.00}px ${10 + ry}px 20px rgba(0,0,0,0.35),
+        0 20px 40px rgba(122,179,245,${glowAlpha.toFixed(2)})
+      `;
+
+      rafId = requestAnimationFrame(tick);
+    }
+
+    hero.addEventListener('mousemove', (e) => {
+      const rect = hero.getBoundingClientRect();
+      /* Normalise to -1 … +1 */
+      targetX = ((e.clientX - rect.left) / rect.width  - 0.5) * 2;
+      targetY = ((e.clientY - rect.top)  / rect.height - 0.5) * 2;
+    });
+
+    hero.addEventListener('mouseleave', () => {
+      targetX = 0;
+      targetY = 0;
+    });
+
+    /* Only run the RAF loop while hero is in view */
+    const heroObserver = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        if (!rafId) rafId = requestAnimationFrame(tick);
+      } else {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+    });
+    heroObserver.observe(hero);
+  </script>
+</body>
+</html>
